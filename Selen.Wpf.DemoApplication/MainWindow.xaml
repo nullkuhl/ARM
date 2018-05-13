@@ -1,0 +1,430 @@
+﻿<Controls:MetroWindow
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+        xmlns:arm="clr-namespace:Airmech.Replays.ARM"
+        xmlns:tb="http://www.hardcodet.net/taskbar"
+        xmlns:System="clr-namespace:System;assembly=mscorlib" xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="d" x:Class="Airmech.Replays.ARM.MainWindow"
+                      x:Name="MainMetroWindow"
+        Title="ARM - Airmech Replay Manager"
+        Height="768" Width="1366" WindowStartupLocation="CenterScreen" TitleForeground="#999988"
+        ResizeMode="CanMinimize" WindowStyle="None" WindowTransitionsEnabled="False"  WindowState="Normal" ShowMaxRestoreButton="False">
+
+    <Canvas Margin="0,0,2,0">
+        <Canvas.Resources>
+            <arm:ShowWindowCommand
+                x:Key="ShowWindowCommand" />
+            <arm:TextInputToVisibilityConverter x:Key="TextInputToVisibilityConverter" />
+        </Canvas.Resources>
+        <tb:TaskbarIcon
+      IconSource="Images/appIco.ico"
+        DoubleClickCommand="{StaticResource ShowWindowCommand}"
+      DoubleClickCommandParameter="{Binding ElementName=MainMetroWindow}" 
+      ToolTipText="Airmech Replay Manager" >
+            <tb:TaskbarIcon.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Header="E_xit [X]"
+                              Command="{arm:ExitApp}"
+                              CommandParameter="{Binding}"/>
+                </ContextMenu>
+            </tb:TaskbarIcon.ContextMenu>
+        </tb:TaskbarIcon>
+        <Grid x:Name="ContentGrid" Width="1366" Height="768">
+
+            <Grid.Background>
+                <ImageBrush ImageSource="Images/dogfightbg2.jpg" Stretch="Fill"/>
+            </Grid.Background>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="209*"/>
+                <ColumnDefinition Width="417*"/>
+
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="8*"/>
+                <RowDefinition Height="761*"/>
+
+            </Grid.RowDefinitions>
+
+            <Grid x:Name="sideBarGrid" Margin="-1013,118,84,-30" Grid.Row="1">
+                <Grid.RenderTransform>
+                    <TranslateTransform />
+                </Grid.RenderTransform>
+                <Image x:Name="sideBarBG" HorizontalAlignment="Left" Height="622" Margin="-8,84,0,-34" VerticalAlignment="Top" Width="337" Source="Images/SideBar_BG_.png"/>
+
+
+                <ListBox x:Name="replayList" Margin="23,106,0,103" HorizontalAlignment="Left" Width="274" SelectionChanged="ListBox_SelectionChanged">
+
+                    <ListBox.ItemTemplate>
+
+                        <DataTemplate>
+                            <Grid VerticalAlignment="Bottom" Height="37">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition/>
+                                    <ColumnDefinition/>
+
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition/>
+
+
+                                </Grid.RowDefinitions>
+
+                                <TextBlock  Grid.Column="0" x:Name="replayName" Height="36" TextWrapping="Wrap" Text="{Binding Name}" VerticalAlignment="Top" FontSize="18" Foreground="White" FontFamily="Bernino Sans Offc" FontWeight="Bold">
+                                    <TextBlock.Effect>
+                                        <DropShadowEffect  Color="Black" Direction="320" ShadowDepth="5" Opacity="0.5" />
+
+                                    </TextBlock.Effect>
+                                </TextBlock>
+                                <TextBlock  Grid.Column="0" x:Name="replayVersion" Height="18" Margin="0,25,0,0" TextWrapping="Wrap" Text="{Binding Version, StringFormat=Build Version: \{0\}}" VerticalAlignment="Top" Foreground="White" FontFamily="Bernino Sans Offc Lt" FontSize="11">
+                                    <TextBlock.Effect>
+                                        <DropShadowEffect  Color="Black" Direction="320" ShadowDepth="5" Opacity="0.5" />
+                                    </TextBlock.Effect>
+                                </TextBlock>
+                                <TextBlock  Grid.Column="1" x:Name="replayTime" Height="18"  Margin="0,4,0,0" TextWrapping="Wrap" Text="{Binding Time}" VerticalAlignment="Top" FontSize="15" Foreground="White" FontFamily="Bernino Sans Offc" HorizontalAlignment="Right">
+                                    <TextBlock.Effect>
+                                        <DropShadowEffect  Color="Black" Direction="320" ShadowDepth="5" Opacity="0.5" />
+
+                                    </TextBlock.Effect>
+                                </TextBlock>
+                                <TextBlock   Grid.Column="1" x:Name="replayDate" Height="36" Margin="0,20,0,0" TextWrapping="Wrap" Text="{Binding Date}" VerticalAlignment="Top" Foreground="White" FontFamily="Bernino Sans Offc" HorizontalAlignment="Right">
+                                    <TextBlock.Effect>
+                                        <DropShadowEffect  Color="Black" Direction="320" ShadowDepth="5" Opacity="0.5" />
+
+                                    </TextBlock.Effect>
+                                </TextBlock>
+
+                            </Grid>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+
+                </ListBox>
+                <Image x:Name="filterBG" HorizontalAlignment="Left" Height="85" Margin="1,0,0,0" VerticalAlignment="Top" Width="320" Source="Images/Filter_ref.png"/>
+                <TextBlock Padding="2" HorizontalAlignment="Left" Height="39" Margin="27,24,0,0" TextWrapping="Wrap" TextAlignment="Center" VerticalAlignment="Top" Width="181"  Background="{x:Null}" FontFamily="HallockW90-Bold" FontSize="16.5" Text="Filter by player or map" Foreground="#FF8C6731" >
+                    <TextBlock.Visibility>
+                        <MultiBinding Converter="{StaticResource TextInputToVisibilityConverter}">
+                            <Binding ElementName="filterTextBox" Path="Text.IsEmpty" />
+                            <Binding ElementName="filterTextBox" Path="IsFocused" />
+                        </MultiBinding>
+                    </TextBlock.Visibility>
+                </TextBlock>
+                <TextBox x:Name="filterTextBox" VerticalContentAlignment="Center" TextChanged="filterTextBox_TextChanged" ToolTip="Write your filter here !"  HorizontalAlignment="Left" Height="39" Margin="29,21,0,0" TextWrapping="Wrap" TextAlignment="Center" VerticalAlignment="Top" Width="181" BorderBrush="{x:Null}" Background="{x:Null}" FontFamily="HallockW90-Bold" FontSize="16.5" Foreground="#FF8C6731"/>
+                <Button x:Name="refreshButton" Content="q" HorizontalAlignment="Left" Height="45" Margin="254,18,0,0" VerticalAlignment="Top" Width="52" BorderBrush="#00201F1D" BorderThickness="0.5" FontSize="42"  Foreground="#FF8C6731" FontFamily="Webdings" Click="refreshButton_Click"/>
+
+
+            </Grid>
+            <Grid x:Name="videoDisplayGrid" Grid.ColumnSpan="2" Margin="332,-800,-54,0" Grid.RowSpan="2">
+                <Grid.RenderTransform>
+                    <TranslateTransform />
+                </Grid.RenderTransform>
+
+
+
+                <Image x:Name="mapPreview" Opacity="1" HorizontalAlignment="Left" Height="436" Margin="117,145,0,0" VerticalAlignment="Top" Width="817" Source="Images/tharFull.jpg" Visibility="Hidden"/>
+
+                <Image x:Name="videoPanelScanLines" HorizontalAlignment="Left" Height="492" Margin="105,80,0,0" VerticalAlignment="Top" Width="827" Source="Images/scanlines.jpg" Opacity="0.6"/>
+                <Image x:Name="mapBar" Opacity="0.8" HorizontalAlignment="Left" Height="79" Margin="120,96,0,0" VerticalAlignment="Top" Width="817" Source="Images/mapbar_.png" Visibility="Hidden"/>
+                <Rectangle  x:Name="player3Shadow" StrokeThickness="2"
+                        Margin="319,368,604,1021" Visibility="Hidden">
+                    <Rectangle.Fill>
+                        <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                            <GradientStop Color="#7F000000" Offset="0"/>
+                            <GradientStop Offset="0.633" Color="#00000000"/>
+                        </LinearGradientBrush>
+                    </Rectangle.Fill>
+                    <Rectangle.RenderTransform>
+
+                        <TransformGroup>
+                            <ScaleTransform/>
+                            <SkewTransform AngleY="10"/>
+                            <RotateTransform Angle="170"/>
+                            <TranslateTransform Y="-15"/>
+                        </TransformGroup>
+                    </Rectangle.RenderTransform>
+                </Rectangle>
+                <Rectangle  x:Name="player2Shadow" StrokeThickness="2"
+                        Margin="737,368,183,1023" Visibility="Hidden">
+                    <Rectangle.Fill>
+                        <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                            <GradientStop Color="#7F000000" Offset="0"/>
+                            <GradientStop Offset="0.633" Color="#00000000"/>
+                        </LinearGradientBrush>
+                    </Rectangle.Fill>
+                    <Rectangle.RenderTransform>
+
+                        <TransformGroup>
+                            <ScaleTransform ScaleY="1.015" ScaleX="0.985"/>
+                            <SkewTransform AngleY="-10"/>
+                            <RotateTransform Angle="-170"/>
+                            <TranslateTransform Y="-15"/>
+                        </TransformGroup>
+                    </Rectangle.RenderTransform>
+                </Rectangle>
+                <Rectangle  x:Name="player1Shadow" StrokeThickness="2"
+                        Margin="495,368,428,1017" Visibility="Hidden">
+                    <Rectangle.Fill>
+                        <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                            <GradientStop Color="#7F000000" Offset="0"/>
+                            <GradientStop Offset="0.633" Color="#00000000"/>
+                        </LinearGradientBrush>
+                    </Rectangle.Fill>
+                    <Rectangle.RenderTransform>
+
+                        <TransformGroup>
+                            <ScaleTransform/>
+                            <SkewTransform AngleY="10"/>
+                            <RotateTransform Angle="170"/>
+                            <TranslateTransform Y="-15"/>
+                        </TransformGroup>
+                    </Rectangle.RenderTransform>
+                </Rectangle>
+                <Rectangle x:Name="player4Shadow" StrokeThickness="2"
+                        Margin="913,368,8,1025" Visibility="Hidden">
+                    <Rectangle.Fill>
+                        <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                            <GradientStop Color="#7F000000" Offset="0"/>
+                            <GradientStop Offset="0.633" Color="#00000000"/>
+                        </LinearGradientBrush>
+                    </Rectangle.Fill>
+                    <Rectangle.RenderTransform>
+
+                        <TransformGroup>
+                            <ScaleTransform ScaleY="1.015" ScaleX="0.985"/>
+                            <SkewTransform AngleY="-10"/>
+                            <RotateTransform Angle="-170"/>
+                            <TranslateTransform Y="-15"/>
+                        </TransformGroup>
+                    </Rectangle.RenderTransform>
+                </Rectangle>
+                <Image x:Name="videoPanel" HorizontalAlignment="Left" Height="780" VerticalAlignment="Top" Width="1132" Source="Images/video panel.png"/>
+                <Button x:Name="playButton" Content="Play" HorizontalAlignment="Left" Height="38"  Margin="865,668,0,0" VerticalAlignment="Top" Width="95" BorderBrush="#00201F1D" BorderThickness="0.5" FontSize="22" Foreground="#FFD3A65C" FontFamily="Enter The Grid" Click="playButton_Click"/>
+                <Button x:Name="uploadButton" Content="Share" HorizontalAlignment="Left" Height="38" Margin="750,668,0,0" VerticalAlignment="Top" Width="96" BorderBrush="#00201F1D" BorderThickness="0.5" FontSize="22" Foreground="#FFD4A85D" FontFamily="Enter The Grid" Click="uploadButton_Click"/>
+                <Image x:Name="miniMap" HorizontalAlignment="Left" Height="152" Margin="467,539,0,0" VerticalAlignment="Top" Width="132" Source="Images/thar_mini.jpg" Visibility="Hidden"/>
+                <Image x:Name="miniMapBorder" HorizontalAlignment="Left" Height="186" Margin="442,516,0,0" VerticalAlignment="Top" Width="184" Source="Images/minimap.png" Visibility="Hidden"/>
+                <Grid Margin="117,80,156,199">
+                    <Rectangle  x:Name="player3NameBar" HorizontalAlignment="Left" Height="26" Margin="34,278,0,0" StrokeThickness="2" VerticalAlignment="Top" Width="169" Visibility="Hidden">
+                        <Rectangle.Fill>
+                            <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                                <GradientStop Color="#FF0049A0" Offset="1"/>
+                                <GradientStop Offset="0.808" Color="#FF177BF3"/>
+                                <GradientStop Color="#7F023572" Offset="0.8"/>
+                            </LinearGradientBrush>
+                        </Rectangle.Fill>
+                    </Rectangle>
+                    <Rectangle  x:Name="player2NameBar" HorizontalAlignment="Left" Height="26" Margin="451,278,0,0" StrokeThickness="2" VerticalAlignment="Top" Width="169" Visibility="Hidden">
+                        <Rectangle.Fill>
+                            <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                                <GradientStop Color="#FFA00202" Offset="1"/>
+                                <GradientStop Offset="0.808" Color="#FFF31717"/>
+                                <GradientStop Color="#7F720202" Offset="0.8"/>
+                            </LinearGradientBrush>
+                        </Rectangle.Fill>
+                    </Rectangle>
+                    <Rectangle x:Name="player1NameBar" HorizontalAlignment="Left" Height="26" Margin="210,278,0,0" StrokeThickness="2" VerticalAlignment="Top" Width="169" RenderTransformOrigin="0.5,0.5" Visibility="Hidden">
+                        <Rectangle.RenderTransform>
+                            <TransformGroup>
+                                <ScaleTransform/>
+                                <SkewTransform/>
+                                <RotateTransform Angle="0.273"/>
+                                <TranslateTransform/>
+                            </TransformGroup>
+                        </Rectangle.RenderTransform>
+                        <Rectangle.Fill>
+                            <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                                <GradientStop Color="#FF0049A0" Offset="1"/>
+                                <GradientStop Color="#FF177BF3" Offset="0.808"/>
+                                <GradientStop Color="#7F023572" Offset="0.8"/>
+                            </LinearGradientBrush>
+                        </Rectangle.Fill>
+                    </Rectangle>
+                    <Image x:Name="player2Hero"  HorizontalAlignment="Left" Height="171" Margin="452,105,0,0" VerticalAlignment="Top" Width="169"  RenderTransformOrigin="0.5,0.5" Visibility="Hidden">
+                        <Image.RenderTransform>
+                            <TransformGroup>
+                                <ScaleTransform ScaleX="-1"/>
+                                <SkewTransform/>
+                                <RotateTransform/>
+                                <TranslateTransform/>
+                            </TransformGroup>
+                        </Image.RenderTransform>
+                    </Image>
+                    <Rectangle x:Name="player4NameBar" HorizontalAlignment="Left" Height="26" Margin="627,278,0,0" StrokeThickness="2" VerticalAlignment="Top" Width="169" Visibility="Hidden">
+                        <Rectangle.Fill>
+                            <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                                <GradientStop Color="#FFA00202" Offset="1"/>
+                                <GradientStop Offset="0.808" Color="#FFF31717"/>
+                                <GradientStop Color="#7F720202" Offset="0.8"/>
+                            </LinearGradientBrush>
+                        </Rectangle.Fill>
+                    </Rectangle>
+                    <Image x:Name="player4Hero"  HorizontalAlignment="Left" Height="171" Margin="628,105,0,0" VerticalAlignment="Top" Width="169" RenderTransformOrigin="0.5,0.5" Visibility="Hidden">
+                        <Image.RenderTransform>
+                            <TransformGroup>
+                                <ScaleTransform ScaleX="-1"/>
+                                <SkewTransform/>
+                                <RotateTransform/>
+                                <TranslateTransform/>
+                            </TransformGroup>
+                        </Image.RenderTransform>
+                    </Image>
+                    <Image x:Name="player1Hero"  HorizontalAlignment="Left" Height="171" Margin="210,105,0,0" VerticalAlignment="Top" Width="169"  RenderTransformOrigin="0.5,0.5" Stretch="Fill" Visibility="Hidden"/>
+                    <Image x:Name="player3Hero"  HorizontalAlignment="Left" Height="171" Margin="31,105,0,0" VerticalAlignment="Top" Width="169"  RenderTransformOrigin="0.5,0.5" Visibility="Hidden"/>
+                    <Label x:Name="player1Name"  TextOptions.TextRenderingMode="ClearType" TextOptions.TextFormattingMode="Display" RenderOptions.ClearTypeHint="Enabled" Content="NULLKUHL" HorizontalAlignment="Left" HorizontalContentAlignment="Center" Height="31" Margin="210,277,0,0" VerticalAlignment="Top" Width="169" Foreground="White" BorderBrush="Black" FontSize="15" FontFamily="HallockW90-Bold" BorderThickness="0" RenderTransformOrigin="-0.443,0.581" Visibility="Hidden"/>
+                    <Label x:Name="player3Name"  TextOptions.TextRenderingMode="ClearType" TextOptions.TextFormattingMode="Display" RenderOptions.ClearTypeHint="Enabled" Content="PROTEGOBATU" HorizontalAlignment="Left"  HorizontalContentAlignment="Center"  Height="31" Margin="33,277,0,0" VerticalAlignment="Top" Width="169" Foreground="White" BorderBrush="Black" FontSize="15" FontFamily="HallockW90-Bold" BorderThickness="0" RenderTransformOrigin="-0.443,0.581" FontWeight="Bold" Visibility="Hidden"/>
+                    <Label x:Name="player2Name"  TextOptions.TextRenderingMode="ClearType" TextOptions.TextFormattingMode="Display" RenderOptions.ClearTypeHint="Enabled" Content="MAMOTHATANK11" HorizontalAlignment="Left" HorizontalContentAlignment="Center" Height="31" Margin="451,277,0,0" VerticalAlignment="Top" Width="169" Foreground="White" BorderBrush="Black" FontSize="15" FontFamily="HallockW90-Bold" BorderThickness="0" RenderTransformOrigin="-0.443,0.581" FontWeight="Bold" Visibility="Hidden"/>
+                    <Label x:Name="player4Name"  TextOptions.TextRenderingMode="ClearType" TextOptions.TextFormattingMode="Display" RenderOptions.ClearTypeHint="Enabled" Content="NULLKUHL" HorizontalAlignment="Left"  HorizontalContentAlignment="Center"  Height="31" Margin="627,277,0,0" VerticalAlignment="Top" Width="169" Foreground="White" BorderBrush="Black" FontSize="15" FontFamily="HallockW90-Bold" BorderThickness="0" RenderTransformOrigin="-0.443,0.581" FontWeight="Bold" Visibility="Hidden"/>
+                    <Label x:Name="mapName" Content="THAR" HorizontalAlignment="Left" HorizontalContentAlignment="Center" Height="67" VerticalAlignment="Top" Width="806" Foreground="White" BorderBrush="Black" FontSize="40" FontFamily="Venus Rising" FontWeight="Bold" BorderThickness="0" Visibility="Hidden" Margin="13,28,-2,0">
+                        <Label.BitmapEffect>
+                            <DropShadowBitmapEffect Color="Black" Direction="0" ShadowDepth="0" Opacity="1"  Softness="0.4" />
+
+                        </Label.BitmapEffect>
+
+                    </Label>
+                    <Label x:Name="versusText" Content="VS" HorizontalAlignment="Left" HorizontalContentAlignment="Center" Height="66" Margin="371,190,0,0" VerticalAlignment="Top" Width="86" Foreground="White" BorderBrush="Black" FontSize="35" FontFamily="Venus Rising" BorderThickness="0" Visibility="Hidden"/>
+
+
+
+                </Grid>
+                <Button x:Name="btnBack" Style="{StaticResource backButton}" Content="" HorizontalAlignment="Center" Height="50" Margin="973,4,38,0" VerticalAlignment="Top" Width="77" Click="btnBack_Click"/>
+
+
+
+            </Grid>
+            <Image x:Name="appLogo" HorizontalAlignment="Left" Height="117" Margin="-40,-150,0,0" VerticalAlignment="Top" Width="432" Source="Images/logo.png" Grid.Row="1">
+                <Image.RenderTransform>
+                    <TranslateTransform />
+                </Image.RenderTransform>
+            </Image>
+            <Image x:Name="appLogoLarge" Visibility="Visible" HorizontalAlignment="Center" Height="171" Margin="317,20,347,0" VerticalAlignment="Top" Width="702" Source="Images/logo.png" Grid.ColumnSpan="2" Grid.Row="1">
+                <Image.RenderTransform>
+                    <TranslateTransform />
+                </Image.RenderTransform>
+            </Image>
+            <Grid x:Name="SteamGrid"  Visibility="Visible" Grid.Column="1" Grid.Row="1" Margin="59,220,519,42">
+                <Grid.RenderTransform>
+                    <TranslateTransform />
+                </Grid.RenderTransform>
+                <Image x:Name="panelSteam" HorizontalAlignment="Center" Height="498" VerticalAlignment="Top" Width="332" Source="Images/panel.png">
+                    <Image.RenderTransform>
+                        <TranslateTransform />
+                    </Image.RenderTransform>
+                </Image>
+                <Image x:Name="steamAppLogo" HorizontalAlignment="Center" Height="193" Margin="72,34,74,0" VerticalAlignment="Top" Width="186" Source="Images/steamLogo.png">
+                    <Image.RenderTransform>
+                        <TranslateTransform />
+                    </Image.RenderTransform>
+                </Image>
+                <Button x:Name="btnSteamApp" Style="{StaticResource mainButton}" Content="View Replays" HorizontalAlignment="Center" Height="50" Margin="90,330,92,0" VerticalAlignment="Top" Width="150" Click="btnSteamApp_Click">
+                    <Button.RenderTransform>
+                        <TranslateTransform />
+                    </Button.RenderTransform>
+                </Button>
+                <Label x:Name="steamAPP"  TextOptions.TextRenderingMode="ClearType" TextOptions.TextFormattingMode="Display" RenderOptions.ClearTypeHint="Enabled" Content="Steam App" HorizontalAlignment="Center" HorizontalContentAlignment="Center" Height="40" VerticalAlignment="Center" Width="210" Foreground="#e39919" BorderBrush="Black" FontSize="22" FontFamily="HallockW90-Bold" BorderThickness="0" RenderTransformOrigin="0,0" Margin="59,227,63,231">
+                    <Label.Effect>
+                        <DropShadowEffect  Color="Black" Direction="320" ShadowDepth="1" Opacity="0.6" />
+                    </Label.Effect>
+                </Label>
+                <Label x:Name="steamLabelGameVer"  HorizontalContentAlignment="Right" TextOptions.TextRenderingMode="ClearType" TextOptions.TextFormattingMode="Display" RenderOptions.ClearTypeHint="Enabled" Content="Game Version: " HorizontalAlignment="Center" Height="28" VerticalAlignment="Center" Width="118" Foreground="#FFAF8131" BorderBrush="Black" FontSize="18" FontFamily="DistillaBold" BorderThickness="0" RenderTransformOrigin="0,0" Margin="73,263,141,207" Background="#00AF8131">
+                    <Label.Effect>
+                        <DropShadowEffect  Color="Black" Direction="320" ShadowDepth="1" Opacity="0.6" />
+                    </Label.Effect>
+                </Label>
+                <Label x:Name="steamLabelReplays"  HorizontalContentAlignment="Right" TextOptions.TextRenderingMode="ClearType" TextOptions.TextFormattingMode="Display" RenderOptions.ClearTypeHint="Enabled" Content="Replays:" HorizontalAlignment="Center"  Height="28" VerticalAlignment="Center" Width="118" Foreground="#FFAF8131" BorderBrush="Black" FontSize="18" FontFamily="DistillaBold" BorderThickness="0" RenderTransformOrigin="0,0" Margin="68,283,146,187" Background="#00AF8131">
+                    <Label.Effect>
+                        <DropShadowEffect  Color="Black" Direction="320" ShadowDepth="1" Opacity="0.6" />
+                    </Label.Effect>
+                </Label>
+                <Label x:Name="steamLabelVersionValue"  HorizontalContentAlignment="Left" TextOptions.TextRenderingMode="ClearType" TextOptions.TextFormattingMode="Display" RenderOptions.ClearTypeHint="Enabled" Content="N/A" HorizontalAlignment="Center" Height="28" VerticalAlignment="Center" Width="82" Foreground="#FFCFBC9C" BorderBrush="Black" FontSize="15" FontFamily="HallockW90-Bold" BorderThickness="0" RenderTransformOrigin="0,0" Margin="184,267,66,203" Background="#00AF8131">
+                    <Label.Effect>
+                        <DropShadowEffect  Color="Black" Direction="320" ShadowDepth="1" Opacity="0.6" />
+                    </Label.Effect>
+                </Label>
+                <Label x:Name="steamReplaysCount"  HorizontalContentAlignment="Left" TextOptions.TextRenderingMode="ClearType" TextOptions.TextFormattingMode="Display" RenderOptions.ClearTypeHint="Enabled" Content="N/A" HorizontalAlignment="Center" Height="28" VerticalAlignment="Center" Width="82" Foreground="#FFCFBC9C" BorderBrush="Black" FontSize="15" FontFamily="HallockW90-Bold" BorderThickness="0" RenderTransformOrigin="0,0" Margin="184,287,66,183" Background="#00F9DAA3">
+                    <Label.Effect>
+                        <DropShadowEffect  Color="Black" Direction="320" ShadowDepth="1" Opacity="0.6" />
+                    </Label.Effect>
+                </Label>
+
+            </Grid>
+            <Grid x:Name="ArmGrid"  Visibility="Visible" Grid.Column="1" Grid.Row="1" Margin="445,220,133,42">
+                <Grid.RenderTransform>
+                    <TranslateTransform />
+                </Grid.RenderTransform>
+                <Image x:Name="panelArm" HorizontalAlignment="Center" Height="498" VerticalAlignment="Top" Width="332" Source="Images/panel.png">
+                    <Image.RenderTransform>
+                        <TranslateTransform />
+                    </Image.RenderTransform>
+                </Image>
+                <Image x:Name="panelApp_Copy2" HorizontalAlignment="Center" Height="184" Margin="77,38,70,0" VerticalAlignment="Top" Width="185" Source="Images/armLogo.png">
+                    <Image.RenderTransform>
+                        <TranslateTransform />
+                    </Image.RenderTransform>
+                </Image>
+                <Button x:Name="btnArmApp" Style="{StaticResource mainButton}" Content="Load Replay" HorizontalAlignment="Center" Height="50" Margin="94,330,89,0" VerticalAlignment="Top" Width="149" >
+                    <Button.RenderTransform>
+                        <TranslateTransform />
+                    </Button.RenderTransform>
+                </Button>
+                <Label x:Name="armAPP"  TextOptions.TextRenderingMode="ClearType" TextOptions.TextFormattingMode="Display" RenderOptions.ClearTypeHint="Enabled" Content="Arm Replay" HorizontalAlignment="Center" HorizontalContentAlignment="Center" Height="40" VerticalAlignment="Center" Width="210" Foreground="#e39919" BorderBrush="Black" FontSize="22" FontFamily="HallockW90-Bold" BorderThickness="0" RenderTransformOrigin="0,0" Margin="66,227,56,231">
+                    <Label.Effect>
+                        <DropShadowEffect  Color="Black" Direction="320" ShadowDepth="1" Opacity="0.6" />
+                    </Label.Effect>
+                </Label>
+
+                <TextBlock x:Name="armLabelDesc" TextAlignment="Center" TextOptions.TextRenderingMode="ClearType" TextOptions.TextFormattingMode="Display"  TextWrapping="Wrap" RenderOptions.ClearTypeHint="Enabled" Text="Load .arm replay that you have downloaded" HorizontalAlignment="Center" Height="48" VerticalAlignment="Center" Width="210" Foreground="#FFAF8131"  FontSize="18" FontFamily="DistillaBold" RenderTransformOrigin="0,0" Margin="64,269,58,181" Background="#00F9DAA3">
+
+                    <TextBlock.Effect>
+                        <DropShadowEffect  Color="Black" Direction="320" ShadowDepth="1" Opacity="0.6" />
+                    </TextBlock.Effect>
+                </TextBlock>
+
+            </Grid>
+            <Grid x:Name="WindowsGrid"   Visibility="Visible" Margin="130,220,884,42" Grid.Row="1" Grid.ColumnSpan="2">
+                <Grid.RenderTransform>
+                    <TranslateTransform />
+                </Grid.RenderTransform>
+                <Image x:Name="panelApp" HorizontalAlignment="Center" Height="498" VerticalAlignment="Top" Width="332" Source="Images/panel.png" Margin="10,0">
+                    <Image.RenderTransform>
+                        <TranslateTransform />
+                    </Image.RenderTransform>
+                </Image>
+                <Image x:Name="winAppLogo" HorizontalAlignment="Center" Height="193" Margin="71,34,75,0" VerticalAlignment="Top" Width="186" Source="Images/airmechLogo.png">
+                    <Image.RenderTransform>
+                        <TranslateTransform />
+                    </Image.RenderTransform>
+                </Image>
+                <Button x:Name="btnWinApp" Style="{StaticResource mainButton}" Content="View Replays" HorizontalAlignment="Center" Height="50" Margin="90,330,92,0" VerticalAlignment="Top" Width="150" Background="Red" Click="btnWinApp_Click" >
+                    <Button.RenderTransform>
+                        <TranslateTransform />
+                    </Button.RenderTransform>
+                </Button>
+                <Label x:Name="windowsAPP"  TextOptions.TextRenderingMode="ClearType" TextOptions.TextFormattingMode="Display" RenderOptions.ClearTypeHint="Enabled" Content="Windows App" HorizontalAlignment="Center" HorizontalContentAlignment="Center" Height="36" VerticalAlignment="Center" Width="204" Foreground="#e39919" BorderBrush="Black" FontSize="22" FontFamily="HallockW90-Bold" BorderThickness="0" RenderTransformOrigin="0,0" Margin="71,227,77,235">
+                    <Label.Effect>
+                        <DropShadowEffect  Color="Black" Direction="320" ShadowDepth="1" Opacity="0.6" />
+                    </Label.Effect>
+                </Label>
+                <Label x:Name="winLabelGameVer"  HorizontalContentAlignment="Right" TextOptions.TextRenderingMode="ClearType" TextOptions.TextFormattingMode="Display" RenderOptions.ClearTypeHint="Enabled" Content="Game Version: " HorizontalAlignment="Center" Height="28" VerticalAlignment="Center" Width="118" Foreground="#FFAF8131" BorderBrush="Black" FontSize="18" FontFamily="DistillaBold" BorderThickness="0" RenderTransformOrigin="0,0" Margin="83,263,151,207" Background="#00AF8131">
+                    <Label.Effect>
+                        <DropShadowEffect  Color="Black" Direction="320" ShadowDepth="1" Opacity="0.6" />
+                    </Label.Effect>
+                </Label>
+                <Label x:Name="winLabelReplays"  HorizontalContentAlignment="Right" TextOptions.TextRenderingMode="ClearType" TextOptions.TextFormattingMode="Display" RenderOptions.ClearTypeHint="Enabled" Content="Replays:" HorizontalAlignment="Center"  Height="28" VerticalAlignment="Center" Width="118" Foreground="#FFAF8131" BorderBrush="Black" FontSize="18" FontFamily="DistillaBold" BorderThickness="0" RenderTransformOrigin="0,0" Margin="78,283,156,187" Background="#00AF8131">
+                    <Label.Effect>
+                        <DropShadowEffect  Color="Black" Direction="320" ShadowDepth="1" Opacity="0.6" />
+                    </Label.Effect>
+                </Label>
+                <Label x:Name="winLabelVersionValue"  HorizontalContentAlignment="Left" TextOptions.TextRenderingMode="ClearType" TextOptions.TextFormattingMode="Display" RenderOptions.ClearTypeHint="Enabled" Content="N/A" HorizontalAlignment="Center" Height="28" VerticalAlignment="Center" Width="82" Foreground="#FFCFBC9C" BorderBrush="Black" FontSize="15" FontFamily="HallockW90-Bold" BorderThickness="0" RenderTransformOrigin="0,0" Margin="194,267,76,203" Background="#00AF8131">
+                    <Label.Effect>
+                        <DropShadowEffect  Color="Black" Direction="320" ShadowDepth="1" Opacity="0.6" />
+                    </Label.Effect>
+                </Label>
+                <Label x:Name="winReplaysCount"  HorizontalContentAlignment="Left" TextOptions.TextRenderingMode="ClearType" TextOptions.TextFormattingMode="Display" RenderOptions.ClearTypeHint="Enabled" Content="N/A" HorizontalAlignment="Center" Height="28" VerticalAlignment="Center" Width="82" Foreground="#FFCFBC9C" BorderBrush="Black" FontSize="15" FontFamily="HallockW90-Bold" BorderThickness="0" RenderTransformOrigin="0,0" Margin="194,287,76,183" Background="#00F9DAA3">
+                    <Label.Effect>
+                        <DropShadowEffect  Color="Black" Direction="320" ShadowDepth="1" Opacity="0.6" />
+                    </Label.Effect>
+                </Label>
+            </Grid>
+            <Image x:Name="btmap" HorizontalAlignment="Left" Height="427" Margin="436,170,0,0" Grid.Row="1" VerticalAlignment="Top" Width="860" Grid.ColumnSpan="2"/>
+
+        </Grid>
+
+    </Canvas>
+</Controls:MetroWindow>

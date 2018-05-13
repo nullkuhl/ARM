@@ -1,0 +1,518 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{12A9479B-4807-47E2-B685-C5CEE50E5B53}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Airmech.Replays.ARM</RootNamespace>
+    <AssemblyName>ARM</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <WarningLevel>4</WarningLevel>
+    <TargetFrameworkProfile />
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
+    <PublishUrl>C:\Users\N3cr0M4nc3er\Desktop\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Unc</InstallFrom>
+    <UpdateEnabled>true</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <InstallUrl>\\DESKTOP-8A11IDL\Users\N3cr0M4nc3er\Documents\ARM\</InstallUrl>
+    <ApplicationRevision>2</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <PublishWizardCompleted>true</PublishWizardCompleted>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>Images\appIco.ico</ApplicationIcon>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignManifests>true</SignManifests>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ManifestCertificateThumbprint>498080EE62DEA9DD1439A2E476A53A10AA9EDA3A</ManifestCertificateThumbprint>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ManifestKeyFile>ahmed.helal%40aucegypt.edu.pfx</ManifestKeyFile>
+  </PropertyGroup>
+  <PropertyGroup>
+    <GenerateManifests>true</GenerateManifests>
+  </PropertyGroup>
+  <PropertyGroup>
+    <TargetZone>LocalIntranet</TargetZone>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationManifest>Properties\app.manifest</ApplicationManifest>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>false</SignAssembly>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="ControlzEx, Version=3.0.2.4, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ControlzEx.3.0.2.4\lib\net45\ControlzEx.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="DotNetZip, Version=1.11.0.0, Culture=neutral, PublicKeyToken=6583c7c814667745, processorArchitecture=MSIL">
+      <HintPath>..\packages\DotNetZip.1.11.0\lib\net20\DotNetZip.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Hardcodet.Wpf.TaskbarNotification, Version=1.0.5.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Hardcodet.NotifyIcon.Wpf.1.0.8\lib\net45\Hardcodet.Wpf.TaskbarNotification.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="InputManager, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\InputManager.1.0.0\lib\InputManager.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="MahApps.Metro, Version=1.6.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\MahApps.Metro.1.6.3\lib\net45\MahApps.Metro.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\ControlzEx.3.0.2.4\lib\net45\System.Windows.Interactivity.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Xml" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Xaml">
+      <RequiredTargetFramework>4.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="WindowsBase" />
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+    <Reference Include="WindowsInput, Version=1.0.6.0, Culture=neutral, PublicKeyToken=de2685b4776e9c2e, processorArchitecture=MSIL">
+      <HintPath>..\packages\InputSimulatorPlus.1.0.7\lib\net20\WindowsInput.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <ApplicationDefinition Include="App.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </ApplicationDefinition>
+    <Compile Include="Replay.cs" />
+    <Page Include="MainWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Compile Include="App.xaml.cs">
+      <DependentUpon>App.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="MainWindow.xaml.cs">
+      <DependentUpon>MainWindow.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="OutlinedTextBlock.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <None Include="ahmed.helal%40aucegypt.edu.pfx" />
+    <None Include="app.config" />
+    <None Include="packages.config" />
+    <None Include="Properties\app.manifest" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <AppDesigner Include="Properties\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Selen.Wpf.Core\Airmech.Replays.Core.csproj">
+      <Project>{c94c1bdd-11f9-4a3f-8929-86b1b67ae1d5}</Project>
+      <Name>Airmech.Replays.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Selen.Wpf.SystemStyles\Airmech.Replays.SystemStyles.csproj">
+      <Project>{a468315f-fa11-4bc2-8e5f-ea3c48b24c74}</Project>
+      <Name>Airmech.Replays.SystemStyles</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <SplashScreen Include="Images\SplashScreen.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\bg.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\dogfightbg2.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\scanlines.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\logo.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\mapbar.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\mapbar_.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\tharFull.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\minimap.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\thar_mini.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include=".NETFramework,Version=v4.5">
+      <Visible>False</Visible>
+      <ProductName>Microsoft .NET Framework 4.5 %28x86 and x64%29</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Resources\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\biohazard.jpg" />
+    <Resource Include="Images\biohazard_mini.jpg" />
+    <Resource Include="Images\chasm.jpg" />
+    <Resource Include="Images\chasm_mini.jpg" />
+    <Resource Include="Images\crater.jpg" />
+    <Resource Include="Images\crater_mini.jpg" />
+    <Resource Include="Images\duel.jpg" />
+    <Resource Include="Images\duel_mini.jpg" />
+    <Resource Include="Images\dust.jpg" />
+    <Resource Include="Images\dust_mini.jpg" />
+    <Resource Include="Images\nesthorn.jpg" />
+    <Resource Include="Images\nesthorn_mini.jpg" />
+    <Resource Include="Images\salt.jpg" />
+    <Resource Include="Images\salt_mini.jpg" />
+    <Resource Include="Images\sandrim.jpg" />
+    <Resource Include="Images\sandrim_mini.jpg" />
+    <Resource Include="Images\storm.jpg" />
+    <Resource Include="Images\storm_mini.jpg" />
+    <Resource Include="Images\thar.jpg" />
+    <Resource Include="Images\twinpeaks.jpg" />
+    <Resource Include="Images\twinpeaks_mini.jpg" />
+    <Resource Include="Images\vale.jpg" />
+    <Resource Include="Images\vale_mini.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\appIco.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Mechs\angel_blackops_blue.png" />
+    <Resource Include="Mechs\angel_blackops_green.png" />
+    <Resource Include="Mechs\angel_blackops_red.png" />
+    <Resource Include="Mechs\angel_blackops_yellow.png" />
+    <Resource Include="Mechs\angel_blue.png" />
+    <Resource Include="Mechs\angel_classic_unique.png" />
+    <Resource Include="Mechs\angel_elf_unique.png" />
+    <Resource Include="Mechs\angel_gold_unique.png" />
+    <Resource Include="Mechs\angel_goth_unique.png" />
+    <Resource Include="Mechs\angel_green.png" />
+    <Resource Include="Mechs\angel_pink_unique.png" />
+    <Resource Include="Mechs\angel_red.png" />
+    <Resource Include="Mechs\angel_shark_unique.png" />
+    <Resource Include="Mechs\angel_steam_blue.png" />
+    <Resource Include="Mechs\angel_steam_green.png" />
+    <Resource Include="Mechs\angel_steam_red.png" />
+    <Resource Include="Mechs\angel_steam_yellow.png" />
+    <Resource Include="Mechs\angel_ublack_blue.png" />
+    <Resource Include="Mechs\angel_ublack_green.png" />
+    <Resource Include="Mechs\angel_ublack_red.png" />
+    <Resource Include="Mechs\angel_ublack_yellow.png" />
+    <Resource Include="Mechs\angel_yellow.png" />
+    <Resource Include="Mechs\chopperu_blue.png" />
+    <Resource Include="Mechs\chopperu_green.png" />
+    <Resource Include="Mechs\chopperu_red.png" />
+    <Resource Include="Mechs\chopperu_yellow.png" />
+    <Resource Include="Mechs\chopper_blackops_blue.png" />
+    <Resource Include="Mechs\chopper_blackops_green.png" />
+    <Resource Include="Mechs\chopper_blackops_red.png" />
+    <Resource Include="Mechs\chopper_blackops_yellow.png" />
+    <Resource Include="Mechs\chopper_blue.png" />
+    <Resource Include="Mechs\chopper_commando_unique.png" />
+    <Resource Include="Mechs\chopper_gold_unique.png" />
+    <Resource Include="Mechs\chopper_goth_unique.png" />
+    <Resource Include="Mechs\chopper_green.png" />
+    <Resource Include="Mechs\chopper_pax_blue.png" />
+    <Resource Include="Mechs\chopper_pax_green.png" />
+    <Resource Include="Mechs\chopper_pax_red.png" />
+    <Resource Include="Mechs\chopper_pax_yellow.png" />
+    <Resource Include="Mechs\chopper_prime_unique.png" />
+    <Resource Include="Mechs\chopper_red.png" />
+    <Resource Include="Mechs\chopper_shark_unique.png" />
+    <Resource Include="Mechs\chopper_steam_unique.png" />
+    <Resource Include="Mechs\chopper_ublack_blue.png" />
+    <Resource Include="Mechs\chopper_ublack_green.png" />
+    <Resource Include="Mechs\chopper_ublack_red.png" />
+    <Resource Include="Mechs\chopper_ublack_yellow.png" />
+    <Resource Include="Mechs\chopper_yellow.png" />
+    <Resource Include="Mechs\fighterau_blue.png" />
+    <Resource Include="Mechs\fighterau_green.png" />
+    <Resource Include="Mechs\fighterau_red.png" />
+    <Resource Include="Mechs\fighterau_yellow.png" />
+    <Resource Include="Mechs\fightera_alpha_unique.png" />
+    <Resource Include="Mechs\fightera_beta_unique.png" />
+    <Resource Include="Mechs\fightera_blackops_blue.png" />
+    <Resource Include="Mechs\fightera_blackops_green.png" />
+    <Resource Include="Mechs\fightera_blackops_red.png" />
+    <Resource Include="Mechs\fightera_blackops_yellow.png" />
+    <Resource Include="Mechs\fightera_blue.png" />
+    <Resource Include="Mechs\fightera_gf_unique.png" />
+    <Resource Include="Mechs\fightera_gold_unique.png" />
+    <Resource Include="Mechs\fightera_goth_unique.png" />
+    <Resource Include="Mechs\fightera_green.png" />
+    <Resource Include="Mechs\fightera_police_unique.png" />
+    <Resource Include="Mechs\fightera_red.png" />
+    <Resource Include="Mechs\fightera_steam_unique.png" />
+    <Resource Include="Mechs\fightera_tomcat_unique.png" />
+    <Resource Include="Mechs\fightera_ublack_blue.png" />
+    <Resource Include="Mechs\fightera_ublack_green.png" />
+    <Resource Include="Mechs\fightera_ublack_red.png" />
+    <Resource Include="Mechs\fightera_ublack_yellow.png" />
+    <Resource Include="Mechs\fightera_yellow.png" />
+    <Resource Include="Mechs\fighterneo_ac_unique.png" />
+    <Resource Include="Mechs\fighterneo_blackops_blue.png" />
+    <Resource Include="Mechs\fighterneo_blackops_green.png" />
+    <Resource Include="Mechs\fighterneo_blackops_red.png" />
+    <Resource Include="Mechs\fighterneo_blackops_yellow.png" />
+    <Resource Include="Mechs\fighterneo_blue.png" />
+    <Resource Include="Mechs\fighterneo_dino_unique.png" />
+    <Resource Include="Mechs\fighterneo_gold_unique.png" />
+    <Resource Include="Mechs\fighterneo_goth_unique.png" />
+    <Resource Include="Mechs\fighterneo_green.png" />
+    <Resource Include="Mechs\fighterneo_heart_unique.png" />
+    <Resource Include="Mechs\fighterneo_nvision_unique.png" />
+    <Resource Include="Mechs\fighterneo_raptor_blue.png" />
+    <Resource Include="Mechs\fighterneo_raptor_green.png" />
+    <Resource Include="Mechs\fighterneo_raptor_red.png" />
+    <Resource Include="Mechs\fighterneo_raptor_yellow.png" />
+    <Resource Include="Mechs\fighterneo_red.png" />
+    <Resource Include="Mechs\fighterneo_shark_unique.png" />
+    <Resource Include="Mechs\fighterneo_star_unique.png" />
+    <Resource Include="Mechs\fighterneo_steam_unique.png" />
+    <Resource Include="Mechs\fighterneo_ublack_blue.png" />
+    <Resource Include="Mechs\fighterneo_ublack_green.png" />
+    <Resource Include="Mechs\fighterneo_ublack_red.png" />
+    <Resource Include="Mechs\fighterneo_ublack_yellow.png" />
+    <Resource Include="Mechs\fighterneo_yellow.png" />
+    <Resource Include="Mechs\osprey_blue.png" />
+    <Resource Include="Mechs\osprey_deepsea_unique.png" />
+    <Resource Include="Mechs\osprey_easter_unique.png" />
+    <Resource Include="Mechs\osprey_goth_unique.png" />
+    <Resource Include="Mechs\osprey_green.png" />
+    <Resource Include="Mechs\osprey_medic_unique.png" />
+    <Resource Include="Mechs\osprey_nvision_unique.png" />
+    <Resource Include="Mechs\osprey_red.png" />
+    <Resource Include="Mechs\osprey_steam_unique.png" />
+    <Resource Include="Mechs\osprey_ublack_blue.png" />
+    <Resource Include="Mechs\osprey_ublack_green.png" />
+    <Resource Include="Mechs\osprey_ublack_red.png" />
+    <Resource Include="Mechs\osprey_ublack_yellow.png" />
+    <Resource Include="Mechs\osprey_yellow.png" />
+    <Resource Include="Mechs\paladin_blackops_blue.png" />
+    <Resource Include="Mechs\paladin_blackops_green.png" />
+    <Resource Include="Mechs\paladin_blackops_red.png" />
+    <Resource Include="Mechs\paladin_blackops_yellow.png" />
+    <Resource Include="Mechs\paladin_blue.png" />
+    <Resource Include="Mechs\paladin_camo_blue.png" />
+    <Resource Include="Mechs\paladin_camo_green.png" />
+    <Resource Include="Mechs\paladin_camo_red.png" />
+    <Resource Include="Mechs\paladin_camo_yellow.png" />
+    <Resource Include="Mechs\paladin_goth_unique.png" />
+    <Resource Include="Mechs\paladin_green.png" />
+    <Resource Include="Mechs\paladin_july4th_unique.png" />
+    <Resource Include="Mechs\paladin_nexus_blue.png" />
+    <Resource Include="Mechs\paladin_nexus_green.png" />
+    <Resource Include="Mechs\paladin_nexus_red.png" />
+    <Resource Include="Mechs\paladin_nexus_yellow.png" />
+    <Resource Include="Mechs\paladin_red.png" />
+    <Resource Include="Mechs\paladin_steam_unique.png" />
+    <Resource Include="Mechs\paladin_ublack_blue.png" />
+    <Resource Include="Mechs\paladin_ublack_green.png" />
+    <Resource Include="Mechs\paladin_ublack_red.png" />
+    <Resource Include="Mechs\paladin_ublack_yellow.png" />
+    <Resource Include="Mechs\paladin_yellow.png" />
+    <Resource Include="Mechs\saucer_alien_unique.png" />
+    <Resource Include="Mechs\saucer_blackops_blue.png" />
+    <Resource Include="Mechs\saucer_blackops_green.png" />
+    <Resource Include="Mechs\saucer_blackops_red.png" />
+    <Resource Include="Mechs\saucer_blackops_yellow.png" />
+    <Resource Include="Mechs\saucer_blue.png" />
+    <Resource Include="Mechs\saucer_chrome_unique.png" />
+    <Resource Include="Mechs\saucer_goth_unique.png" />
+    <Resource Include="Mechs\saucer_green.png" />
+    <Resource Include="Mechs\saucer_nexus_blue.png" />
+    <Resource Include="Mechs\saucer_nexus_green.png" />
+    <Resource Include="Mechs\saucer_nexus_red.png" />
+    <Resource Include="Mechs\saucer_nexus_yellow.png" />
+    <Resource Include="Mechs\saucer_octopus_blue.png" />
+    <Resource Include="Mechs\saucer_octopus_green.png" />
+    <Resource Include="Mechs\saucer_octopus_red.png" />
+    <Resource Include="Mechs\saucer_octopus_yellow.png" />
+    <Resource Include="Mechs\saucer_pumpkin_unique.png" />
+    <Resource Include="Mechs\saucer_red.png" />
+    <Resource Include="Mechs\saucer_steam_unique.png" />
+    <Resource Include="Mechs\saucer_ublack_blue.png" />
+    <Resource Include="Mechs\saucer_ublack_green.png" />
+    <Resource Include="Mechs\saucer_ublack_red.png" />
+    <Resource Include="Mechs\saucer_ublack_yellow.png" />
+    <Resource Include="Mechs\saucer_yellow.png" />
+    <Resource Include="Mechs\stealth_beta_unique.png" />
+    <Resource Include="Mechs\stealth_blackops_blue.png" />
+    <Resource Include="Mechs\stealth_blackops_green.png" />
+    <Resource Include="Mechs\stealth_blackops_red.png" />
+    <Resource Include="Mechs\stealth_blackops_yellow.png" />
+    <Resource Include="Mechs\stealth_blue.png" />
+    <Resource Include="Mechs\stealth_goth_unique.png" />
+    <Resource Include="Mechs\stealth_green.png" />
+    <Resource Include="Mechs\stealth_greensea_unique.png" />
+    <Resource Include="Mechs\stealth_ironhand_unique.png" />
+    <Resource Include="Mechs\stealth_phantom_unique.png" />
+    <Resource Include="Mechs\stealth_red.png" />
+    <Resource Include="Mechs\stealth_steam_unique.png" />
+    <Resource Include="Mechs\stealth_ublack_blue.png" />
+    <Resource Include="Mechs\stealth_ublack_green.png" />
+    <Resource Include="Mechs\stealth_ublack_red.png" />
+    <Resource Include="Mechs\stealth_ublack_yellow.png" />
+    <Resource Include="Mechs\stealth_yellow.png" />
+    <Resource Include="Mechs\warthog_blackops_blue.png" />
+    <Resource Include="Mechs\warthog_blackops_green.png" />
+    <Resource Include="Mechs\warthog_blackops_red.png" />
+    <Resource Include="Mechs\warthog_blackops_yellow.png" />
+    <Resource Include="Mechs\warthog_blue.png" />
+    <Resource Include="Mechs\warthog_fla_unique.png" />
+    <Resource Include="Mechs\warthog_goth_unique.png" />
+    <Resource Include="Mechs\warthog_green.png" />
+    <Resource Include="Mechs\warthog_mecha_unique.png" />
+    <Resource Include="Mechs\warthog_nexus_blue.png" />
+    <Resource Include="Mechs\warthog_nexus_green.png" />
+    <Resource Include="Mechs\warthog_nexus_red.png" />
+    <Resource Include="Mechs\warthog_nexus_yellow.png" />
+    <Resource Include="Mechs\warthog_pirate_blue.png" />
+    <Resource Include="Mechs\warthog_pirate_green.png" />
+    <Resource Include="Mechs\warthog_pirate_red.png" />
+    <Resource Include="Mechs\warthog_pirate_yellow.png" />
+    <Resource Include="Mechs\warthog_red.png" />
+    <Resource Include="Mechs\warthog_steam_blue.png" />
+    <Resource Include="Mechs\warthog_steam_green.png" />
+    <Resource Include="Mechs\warthog_steam_red.png" />
+    <Resource Include="Mechs\warthog_steam_yellow.png" />
+    <Resource Include="Mechs\warthog_ublack_blue.png" />
+    <Resource Include="Mechs\warthog_ublack_green.png" />
+    <Resource Include="Mechs\warthog_ublack_red.png" />
+    <Resource Include="Mechs\warthog_ublack_yellow.png" />
+    <Resource Include="Mechs\warthog_yellow.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Filter.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\SideBar_BG_.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Filter_ref.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\panel.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\airmechLogo.png" />
+    <Resource Include="Images\armLogo.png" />
+    <Resource Include="Images\button.png" />
+    <Resource Include="Images\steamLogo.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\panel_bw.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\airmechLogo_bw.png" />
+    <Resource Include="Images\steamLogo_bw.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\video panel.png" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PreBuildEvent>
+    </PreBuildEvent>
+  </PropertyGroup>
+  <Import Project="..\packages\MSBuild.NugetContentRestore.0.1.6\build\net40\MSBuild.NugetContentRestore.targets" Condition="Exists('..\packages\MSBuild.NugetContentRestore.0.1.6\build\net40\MSBuild.NugetContentRestore.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\MSBuild.NugetContentRestore.0.1.6\build\net40\MSBuild.NugetContentRestore.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\MSBuild.NugetContentRestore.0.1.6\build\net40\MSBuild.NugetContentRestore.targets'))" />
+  </Target>
+  <Target Name="BeforeBuild">
+    <NugetContentRestoreTask SolutionDir="$(SolutionDir)" ProjectDir="$(ProjectDir)" />
+  </Target>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

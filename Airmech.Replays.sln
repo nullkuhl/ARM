@@ -1,0 +1,40 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Airmech.Replays.SystemStyles", "Selen.Wpf.SystemStyles\Airmech.Replays.SystemStyles.csproj", "{A468315F-FA11-4BC2-8E5F-EA3C48B24C74}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Airmech.Replays.Core", "Selen.Wpf.Core\Airmech.Replays.Core.csproj", "{C94C1BDD-11F9-4A3F-8929-86B1B67AE1D5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Airmech.Replays.ARM", "Selen.Wpf.DemoApplication\Airmech.Replays.ARM.csproj", "{12A9479B-4807-47E2-B685-C5CEE50E5B53}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tools", "Tools", "{16B154A0-4939-4078-B37F-14E88DA6E7B7}"
+	ProjectSection(SolutionItems) = preProject
+		tools\deploy.cmd = tools\deploy.cmd
+		tools\updateLib.cmd = tools\updateLib.cmd
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A468315F-FA11-4BC2-8E5F-EA3C48B24C74}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A468315F-FA11-4BC2-8E5F-EA3C48B24C74}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A468315F-FA11-4BC2-8E5F-EA3C48B24C74}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A468315F-FA11-4BC2-8E5F-EA3C48B24C74}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C94C1BDD-11F9-4A3F-8929-86B1B67AE1D5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C94C1BDD-11F9-4A3F-8929-86B1B67AE1D5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C94C1BDD-11F9-4A3F-8929-86B1B67AE1D5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C94C1BDD-11F9-4A3F-8929-86B1B67AE1D5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{12A9479B-4807-47E2-B685-C5CEE50E5B53}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{12A9479B-4807-47E2-B685-C5CEE50E5B53}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{12A9479B-4807-47E2-B685-C5CEE50E5B53}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{12A9479B-4807-47E2-B685-C5CEE50E5B53}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
