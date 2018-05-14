@@ -15,8 +15,8 @@ namespace Airmech.Replays.ARM
         public String gameMode;
         public String filePath;
         public String fileName;
-        public String maxPlayers;
-        public String netPlayers;
+        public int maxPlayers;
+        public int netPlayers;
 
         public Dictionary<String, String> p1Data = new Dictionary<string, string>();
         public Dictionary<String, String> p2Data = new Dictionary<string, string>();
@@ -46,11 +46,11 @@ namespace Airmech.Replays.ARM
                     version = line.Split(' ')[1];
                 }else if (line.StartsWith("maxPlayers"))
                 {
-                    maxPlayers = line.Split(' ')[1];
+                    maxPlayers = int.Parse(line.Split(' ')[1])/2;
                 }
                 else if (line.StartsWith("netPlayers"))
                 {
-                    netPlayers = line.Split(' ')[1];
+                    netPlayers = int.Parse(line.Split(' ')[1])/ 2;
                 }
                 else if (line.StartsWith("localtime"))
                 {

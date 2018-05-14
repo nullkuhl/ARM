@@ -19,15 +19,15 @@
                             <Grid Margin="0,0,0,0">
                                 <!--<Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="1" SnapsToDevicePixels="True"/>-->
                                 <Border Name="borderOuter" BorderBrush="#FF1A1717" 
-                                    BorderThickness="8"  ClipToBounds="True">
+                                    BorderThickness="6"  ClipToBounds="True">
                                     <Border.Background>
                                         <ImageBrush ImageSource="bg.jpg"/>
                                     </Border.Background>
                                     <Border Name="borderInner" Background="#00000000" BorderBrush="#7F150E03" 
-                                    BorderThickness="4" Margin="-8">
+                                    BorderThickness="3" Margin="-6">
                                     </Border>
                                 </Border>
-                                <ContentPresenter Margin="20,20"/>
+                                <ContentPresenter Margin="15,10,15,10"/>
                             </Grid>
                             <ControlTemplate.Triggers>
                                 <MultiTrigger>
@@ -43,10 +43,10 @@
                                     </Setter>
                                 </MultiTrigger>
                                 <Trigger Property="IsSelected" Value="True">
-                                    <Setter TargetName="borderOuter" Property="BorderThickness" Value="8" />
+                                    <Setter TargetName="borderOuter" Property="BorderThickness" Value="6" />
                                     <Setter TargetName="borderOuter" Property="BorderBrush" Value="#B2ECBA4F" />
 
-                                    <Setter TargetName="borderInner" Property="BorderThickness" Value="4" />
+                                    <Setter TargetName="borderInner" Property="BorderThickness" Value="3" />
                                     <Setter TargetName="borderInner" Property="BorderBrush" Value="#FF150D03" />
                                     <Setter TargetName="borderInner" Property="Background" Value="#00000000" />
                                     

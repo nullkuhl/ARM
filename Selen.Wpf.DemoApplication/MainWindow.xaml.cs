@@ -23,6 +23,8 @@ using Microsoft.Win32;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Windows.Interop;
+using System.Management;
+using System.Text;
 
 namespace Airmech.Replays.ARM
 {
@@ -32,6 +34,7 @@ namespace Airmech.Replays.ARM
    
     public partial class MainWindow
     {
+        static int fullScreenHandle = -1;
         List<Replay> replayData;
         Storyboard videoPanelSB;
         Storyboard sideBarSB;
@@ -46,6 +49,34 @@ namespace Airmech.Replays.ARM
         bool windowsGameMode = false;
         string selectedReplayGlobal = "";
 
+        [DllImport("user32.dll", EntryPoint = "FindWindowEx")]
+        public static extern IntPtr FindWindowEx(IntPtr hwndParent, IntPtr hwndChildAfter, string lpszClass, string lpszWindow);
+
+
+        [DllImport("User32.Dll")]
+        private static extern void GetClassName(int hWnd, StringBuilder s, int nMaxCount);
+
+
+        [DllImport("user32.dll")]
+        private static extern int EnumWindows(CallBackPtr callPtr, int lPar);
+
+        public delegate bool CallBackPtr(int hwnd, int lParam);
+        private static CallBackPtr callBackPtr;
+
+
+        [DllImport("user32.dll")]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        static extern bool GetWindowPlacement(IntPtr hWnd, ref WINDOWPLACEMENT lpwndpl);
+
+        private struct WINDOWPLACEMENT
+        {
+            public int length;
+            public int flags;
+            public int showCmd;
+            public System.Drawing.Point ptMinPosition;
+            public System.Drawing.Point ptMaxPosition;
+            public System.Drawing.Rectangle rcNormalPosition;
+        }
         [DllImport("user32.dll", SetLastError = true)]
         static extern IntPtr FindWindow(string lpClassName, string lpWindowName);
 
@@ -56,8 +87,26 @@ namespace Airmech.Replays.ARM
         public static extern int SetForegroundWindow(int hwnd);
 
         [DllImport("user32.dll")]
+        public static extern long GetWindowRect(int hWnd, ref Rectangle lpRect);
+
+        [DllImport("user32.dll")]
         private static extern int GetWindowThreadProcessId(IntPtr handle, out uint processId);
 
+        [System.Runtime.InteropServices.DllImport("user32.dll")]
+        [return: System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.Bool)]
+        private static extern bool ShowWindow(IntPtr hWnd, ShowWindowEnum flags);
+
+        [System.Runtime.InteropServices.DllImport("user32.dll")]
+        private static extern int SetForegroundWindow(IntPtr hwnd);
+
+        private enum ShowWindowEnum
+        {
+            Hide = 0,
+            ShowNormal = 1, ShowMinimized = 2, ShowMaximized = 3,
+            Maximize = 3, ShowNormalNoActivate = 4, Show = 5,
+            Minimize = 6, ShowMinNoActivate = 7, ShowNoActivate = 8,
+            Restore = 9, ShowDefault = 10, ForceMinimized = 11
+        };
 
 
 
@@ -70,6 +119,15 @@ namespace Airmech.Replays.ARM
             public int bottom;
         }
 
+        public static bool Report(int hWnd, int lParam)
+        {
+            int size = 256;
+            StringBuilder sb = new StringBuilder(size);
+            GetClassName(hWnd, sb, size);
+            if ((sb.ToString().Contains("AirMech")) && (sb.ToString().Contains("LetterBox")))
+                fullScreenHandle = hWnd;
+            return true;
+        }
         public MainWindow()
         {
             System.IO.Directory.CreateDirectory(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + @"\Carbon\AirMechSteam\.debug\replay");
@@ -184,43 +242,7 @@ namespace Airmech.Replays.ARM
         }
         private void uploadButton_Click(object sender, RoutedEventArgs e)
         {
-            /* <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
-                        <GradientStop Color="#FF0049A0" Offset="1"/>
-                        <GradientStop Color="#FF177BF3" Offset="0.808"/>
-                        <GradientStop Color="#7F023572" Offset="0.8"/>
-                    </LinearGradientBrush>
-             * 
-             *  <Rectangle.Fill>
-                    <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
-                        <GradientStop Color="#FFA00202" Offset="1"/>
-                        <GradientStop Offset="0.808" Color="#FFF31717"/>
-                        <GradientStop Color="#7F720202" Offset="0.8"/>
-                    </LinearGradientBrush>
-                </Rectangle.Fill>
-            </Rectangle>
-            <Rectangle  x:Name="player1Shadow" StrokeThickness="2"
-                Margin="389,430,391,209" Grid.Row="1" Grid.Column="1" Visibility="Hidden">
-                <Rectangle.Fill>
-                    <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
-                        <GradientStop Color="#7F000000" Offset="0"/>
-                        <GradientStop Offset="0.633" Color="#00000000"/>
-                    </LinearGradientBrush>
-                </Rectangle.Fill>
-             * string[] filenames;
-            filenames = Directory.GetFiles(@"C:\Users\N3cr0M4nc3er\Downloads\quickbms\New folder (2)\data\obj\rooks", "*.dds", SearchOption.AllDirectories).Select(x => Path.GetFullPath(x)).ToArray();
-            foreach(String fname in filenames)
-            { 
-                string filePath = fname;
-                int lastSlash = filePath.LastIndexOf('\\');
-                int secndLastSlash = (filePath.LastIndexOf("\\", filePath.LastIndexOf("\\") - 1) + 1);
-                string airMechName = filePath.Substring(secndLastSlash, lastSlash - secndLastSlash);
-                string newfilePath = "";
-                if (filePath.Contains("hangar"))
-                {
-                    newfilePath = filePath.Replace("hangar", airMechName + "_");
-                }
-                System.IO.File.Move(filePath, newfilePath);
-            }*/
+            
 
             var selectedReplay = replayList.SelectedItem;
             if (selectedReplay != null)
@@ -232,16 +254,16 @@ namespace Airmech.Replays.ARM
                     zip.AddFile(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + @"\Carbon\AirMechSteam\.debug\replay\" + replayName + ".replayInfo");
                     zip.CompressionLevel = Ionic.Zlib.CompressionLevel.BestCompression;
                     //zip.UseZip64WhenSaving = Zip64Option.Always;
-                    zip.Save("test_"+replayName+".z");
+                    zip.Save("test_"+replayName+".arm");
                 }
             }
-              
-            player1Name.Content = "Test";
+
         }
 
         private void ListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            
+            playButton.IsEnabled = true;
+            uploadButton.IsEnabled = true;
             versusText.Visibility = Visibility.Visible;
             player1Hero.Visibility = Visibility.Visible;
             player1Name.Visibility = Visibility.Visible;
@@ -656,7 +678,8 @@ namespace Airmech.Replays.ARM
             }
             else
             {
-
+                playButton.IsEnabled = false;
+                uploadButton.IsEnabled = false;
                 versusText.Visibility = Visibility.Hidden;
                 player1Hero.Visibility = Visibility.Hidden;
                 player1Name.Visibility = Visibility.Hidden;
@@ -792,7 +815,7 @@ namespace Airmech.Replays.ARM
             List<replayItem> items = new List<replayItem>();
             foreach (Replay r in replayData)
             {
-                items.Add(new replayItem() { Name = r.fileName, Version = r.version, Time = r.localtime.ToShortTimeString(), Date = r.localtime.Date.ToShortDateString() });
+                items.Add(new replayItem() { Name = r.fileName, Version = r.version,maxPlayers=r.maxPlayers+"",netPlayers=r.netPlayers+"", Time = r.localtime.ToShortTimeString(), Date = r.localtime.Date.ToString("ddd, dd MMM yyy") });
             }
 
             replayList.ItemsSource = items;
@@ -807,8 +830,8 @@ namespace Airmech.Replays.ARM
         {
             try
             {
-            
-              RegistryKey productKey = Registry.CurrentUser.OpenSubKey(@"Software\CarbonGames\AirMechStrike");
+                
+              RegistryKey productKey = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Steam App 206500");
 
                 string[] list= productKey.GetValueNames();
 
@@ -816,9 +839,10 @@ namespace Airmech.Replays.ARM
             string airMechSteamPath = "";
                 if (productKey != null)
                 {                                     
-                        string path = productKey.GetValue("Exe").ToString();                     
-                        airMechSteamPath = path.Substring(0, path.LastIndexOf("\\"));
-                        string[] lines = System.IO.File.ReadAllLines(airMechSteamPath+"\\.version");
+                        string path = productKey.GetValue("InstallLocation").ToString();
+                    //airMechSteamPath = path.Substring(0, path.LastIndexOf("\\"));
+                    airMechSteamPath = path;
+                    string[] lines = System.IO.File.ReadAllLines(airMechSteamPath+"\\.version");
                         return int.Parse(lines[0]);                                     
                 }
                 else
@@ -882,7 +906,7 @@ namespace Airmech.Replays.ARM
             List<replayItem> items = new List<replayItem>();
             foreach (Replay r in replayData)
             {
-                items.Add(new replayItem() { Name = r.fileName, Version = r.version, Time = r.localtime.ToShortTimeString(), Date = r.localtime.Date.ToShortDateString() });
+                items.Add(new replayItem() { Name = r.fileName, Version = r.version, maxPlayers = r.maxPlayers + "", netPlayers = r.netPlayers + "", Time = r.localtime.ToShortTimeString(), Date = r.localtime.Date.ToString("ddd, dd MMM yyy") });
             }
 
             replayList.ItemsSource = items;
@@ -1050,7 +1074,7 @@ namespace Airmech.Replays.ARM
             List<replayItem> items = new List<replayItem>();
             foreach (Replay r in replayData)
             {
-                items.Add(new replayItem() { Name = r.fileName, Version = r.version, Time = r.localtime.ToShortTimeString(), Date = r.localtime.Date.ToShortDateString() });
+                items.Add(new replayItem() { Name = r.fileName, Version = r.version, maxPlayers = r.maxPlayers + "", netPlayers = r.netPlayers + "", Time = r.localtime.ToShortTimeString(), Date = r.localtime.Date.ToString("ddd, dd MMM yyy") });
             }
 
             replayList.ItemsSource = items;
@@ -1210,37 +1234,73 @@ namespace Airmech.Replays.ARM
         {
 
 
-            IntPtr hWnd = FindWindow(null, "AirxMech Strike");
+            IntPtr hWnd = FindWindow(null, "AirMech Strike");
             int ptr = hWnd.ToInt32();
             if (ptr != 0)
             {
-                RECT rc;
-                GetWindowRect(hWnd, out rc);
-                Rectangle rect = new Rectangle(rc.left, rc.top, rc.right, rc.bottom);
-
                 uint pid = 0;
                 GetWindowThreadProcessId(hWnd, out pid);
                 Process proc = Process.GetProcessById((int)pid);
-
-                WindowsInput.InputSimulator inpsim = new WindowsInput.InputSimulator();
-                SetForegroundWindow(hWnd.ToInt32());
-                if (rect.Y != 0)
+                string pathToProcess = proc.MainModule.FileName;
+                if(pathToProcess.Contains(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData))) 
                 {
-                    inpsim.Keyboard.ModifiedKeyStroke(WindowsInput.Native.VirtualKeyCode.MENU, WindowsInput.Native.VirtualKeyCode.RETURN);
-                    System.Threading.Thread.Sleep(1000);
+                    if(steamGameMode)
+                    {
+                        try
+                        {
+                            proc.Kill();
+                        }
+                        catch { }
+                        playButton_Click(null, null);
+                            return;
+                    }
+                }
+                else
+                {
+                    if(!steamGameMode)
+                    {
+                        try
+                        {
+                            proc.Kill();
+                        }
+                        catch { }
+                        playButton_Click(null, null);
+                        return;
+                    }
                 }
 
-                GetWindowRect(hWnd, out rc);
-                rect = new Rectangle(rc.left, rc.top, rc.right, rc.bottom);
-                //   WindowsInput.MouseSimulator msim = new MouseSimulator(new WindowsInput.InputSimulator());
-                //   msim.MoveMouseToPositionOnVirtualDesktop(rect.X , rect.Y );
-                int width = Math.Abs(rc.right - rc.left) - 16;
-                int height = Math.Abs(rc.bottom - rc.top) - 16;
-                int twoPercentHeight = (int)(height * 0.025) + ((int)SystemParameters.VirtualScreenHeight) - height;
-                int onePercentWidth = (int)(width * 0.005);
+                WindowsInput.InputSimulator inpsim = new WindowsInput.InputSimulator();
+                WINDOWPLACEMENT placement = new WINDOWPLACEMENT();
+                GetWindowPlacement(proc.MainWindowHandle, ref placement);
+                if (placement.showCmd==2)
+                {
+                    ShowWindow(proc.MainWindowHandle, ShowWindowEnum.ShowMaximized);
+                   
+                }
+                SetForegroundWindow(hWnd.ToInt32());
+                
+                //check if app is already in fullscreen mode
+                Rectangle fullScreenRect = new Rectangle();
+                callBackPtr = new CallBackPtr(Report);
+                EnumWindows(callBackPtr, 0);
+
+                GetWindowRect(fullScreenHandle, ref fullScreenRect);
+
+                if (!(fullScreenRect.Width > 0))
+                {
+                    inpsim.Keyboard.ModifiedKeyStroke(WindowsInput.Native.VirtualKeyCode.MENU, WindowsInput.Native.VirtualKeyCode.RETURN);
+                    await System.Threading.Tasks.Task.Delay(1000);
+                    System.Threading.Thread.Sleep(1000);
+                }
+                //app now must be in full screen 
+                Rectangle rect = new Rectangle();
+                GetWindowRect(ptr, ref rect);
+
+                int twoPercentHeight = (int)(rect.Height * 0.04) ;
+                int onePercentWidth = (int)(rect.Width * 0.005);
 
                 //Find out which monitor
-                int ScreenOfAppWidth = width;
+                int ScreenOfAppWidth = rect.Width;
                 int diffInHeight = 0;
                 foreach (System.Windows.Forms.Screen screen in System.Windows.Forms.Screen.AllScreens)
                 {
@@ -1250,14 +1310,14 @@ namespace Airmech.Replays.ARM
                         diffInHeight = screen.Bounds.Height - screen.WorkingArea.Height;
                     }
                 }
-                int diffInWidth = ScreenOfAppWidth - width;
+                int diffInWidth = ScreenOfAppWidth - rect.Width;
 
-                //
+                //detection of black edges
                 BitmapSource btsrc;
                 using (var screenBmp = new Bitmap(
-              (int)SystemParameters.VirtualScreenWidth,
-              (int)SystemParameters.VirtualScreenHeight,
-              System.Drawing.Imaging.PixelFormat.Format32bppArgb))
+                (int)SystemParameters.VirtualScreenWidth,
+                (int)SystemParameters.VirtualScreenHeight,
+                System.Drawing.Imaging.PixelFormat.Format32bppArgb))
                 {
                     using (var bmpGraphics = Graphics.FromImage(screenBmp))
                     {
@@ -1269,8 +1329,8 @@ namespace Airmech.Replays.ARM
                            BitmapSizeOptions.FromEmptyOptions());
                     }
                 }
-                btmap.Source = btsrc;
-                Bitmap bitmap;
+                screenShot.Source = btsrc;
+                 Bitmap bitmap;
                 using (var outStream = new MemoryStream())
                 {
                     BitmapEncoder enc = new BmpBitmapEncoder();
@@ -1281,49 +1341,63 @@ namespace Airmech.Replays.ARM
                 }
 
                 int blackMarginWidth = onePercentWidth;
-                for (int i = 0; i < width; i++)
+                for (int i = 0; i < rect.Width; i++)
                 {
-                    System.Drawing.Color curPixel = bitmap.GetPixel(rect.X + width - i, rect.Y + height - height / 3);
-                    //  Console.Write("(" + curPixel.R + "," + curPixel.G + "," + curPixel.B + ") ");
-                    if ((curPixel.R + curPixel.G + +curPixel.B) == 0)
-                    {
-                        blackMarginWidth++;
+                    try { 
+                        System.Drawing.Color curPixel = bitmap.GetPixel( rect.Width - i,  rect.Height - rect.Height / 3);
+                        //  Console.Write("(" + curPixel.R + "," + curPixel.G + "," + curPixel.B + ") ");
+                        
+                        if ((curPixel.R + curPixel.G + +curPixel.B) == 0)
+                        {
+                            blackMarginWidth++;
+                        }
+                        else
+                        {
+                            break;
+                        }
                     }
-                    else
-                    {
-                        break;
+                    catch {
                     }
                 }
                 int blackMarginHeight = 0;
-                for (int i = 0; i < height; i++)
+                for (int i = 0; i < rect.Height; i++)
                 {
-                    System.Drawing.Color curPixel = bitmap.GetPixel(rect.X + width / 2, rect.Y + height - i);
-                    // Console.Write("(" + curPixel.R + "," + curPixel.G + "," + curPixel.B + ") ");
-                    if ((curPixel.R + curPixel.G + +curPixel.B) == 0)
+                    try
                     {
-                        blackMarginHeight++;
+                        System.Drawing.Color curPixel = bitmap.GetPixel(rect.X + rect.Width / 2, rect.Y + rect.Height - i);
+                        // Console.Write("(" + curPixel.R + "," + curPixel.G + "," + curPixel.B + ") ");
+                        if ((curPixel.R + curPixel.G + +curPixel.B) == 0)
+                        {
+                            blackMarginHeight++;
+                        }
+                        else
+                        {
+                            break;
+                        }
                     }
-                    else
-                    {
-                        break;
-                    }
+                    catch { }
+
                 }
                 Console.WriteLine("\n\n");
-                int mouseMoveX = rect.X + width - onePercentWidth - blackMarginWidth + diffInWidth;
-                int mouseMoveY = rect.Y + height - twoPercentHeight - blackMarginHeight + diffInHeight;
+                int mouseMoveX = rect.X + rect.Width - onePercentWidth - blackMarginWidth + diffInWidth;
+                int mouseMoveY = rect.Y + rect.Height - twoPercentHeight - blackMarginHeight + diffInHeight;
+                if ((fullScreenRect.Width > 0))
+                {
+                    mouseMoveY -= rect.Y;
+                }
+
                 System.Threading.Thread.Sleep(500);
                 InputManager.Mouse.Move(mouseMoveX, mouseMoveY);
-                //  inpsim.Mouse.MoveMouseToPositionOnVirtualDesktop(rect.X + width - onePercentWidth - blackMarginWidth, rect.Y + height - twoPercentHeight);
 
-                InputManager.Keyboard.KeyPress(System.Windows.Forms.Keys.Escape, 1);
+                InputManager.Keyboard.KeyPress(System.Windows.Forms.Keys.Escape, 300);
                 System.Threading.Thread.Sleep(200);
-                InputManager.Keyboard.KeyPress(System.Windows.Forms.Keys.Escape, 1);
+                InputManager.Keyboard.KeyPress(System.Windows.Forms.Keys.Escape, 300);
                 System.Threading.Thread.Sleep(200);
-                //inpsim.Mouse.MoveMouseToPositionOnVirtualDesktop(rect.X + width - onePercentWidth - blackMarginWidth, rect.Y + height - twoPercentHeight);
+          
                 InputManager.Mouse.Move(mouseMoveX, mouseMoveY);
                 inpsim.Mouse.LeftButtonDoubleClick();
                 InputManager.Mouse.Move(mouseMoveX, mouseMoveY);
-                //inpsim.Mouse.MoveMouseToPositionOnVirtualDesktop(rect.X + width - onePercentWidth - blackMarginWidth, rect.Y + height - twoPercentHeight);
+          
                 inpsim.Mouse.LeftButtonDoubleClick();
 
                 InputManager.Keyboard.KeyPress(System.Windows.Forms.Keys.Enter, 500);
@@ -1333,7 +1407,7 @@ namespace Airmech.Replays.ARM
 
                 System.Threading.Thread.Sleep(500);
 
-                inpsim.Keyboard.TextEntry("/replay replay092");
+                inpsim.Keyboard.TextEntry("/replay " + selectedReplayGlobal);
                 System.Threading.Thread.Sleep(200);
 
                 InputManager.Keyboard.KeyPress(System.Windows.Forms.Keys.Enter, 500);
@@ -1341,8 +1415,10 @@ namespace Airmech.Replays.ARM
                 InputManager.Keyboard.KeyPress(System.Windows.Forms.Keys.Enter, 500);
                 await System.Threading.Tasks.Task.Delay(600);
             }
+            else
+            {
 
-            ProcessStartInfo pInfo = new ProcessStartInfo("AirMech.exe");
+                ProcessStartInfo pInfo = new ProcessStartInfo("AirMech.exe");
                 pInfo.Arguments = "/replay " + selectedReplayGlobal;
 
                 if (steamGameMode)
@@ -1350,7 +1426,7 @@ namespace Airmech.Replays.ARM
                     try
                     {
 
-                        RegistryKey productKey = Registry.CurrentUser.OpenSubKey(@"Software\CarbonGames\AirMechStrike");
+                        RegistryKey productKey = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Steam App 206500");
 
                         string[] list = productKey.GetValueNames();
 
@@ -1358,11 +1434,20 @@ namespace Airmech.Replays.ARM
                         string airMechSteamPath = "";
                         if (productKey != null)
                         {
-                            string path = productKey.GetValue("Exe").ToString();
-                            airMechSteamPath = path.Substring(0, path.LastIndexOf("\\"));
+                            string path = productKey.GetValue("InstallLocation").ToString();
+                            // airMechSteamPath = path.Substring(0, path.LastIndexOf("\\"));
+                            airMechSteamPath = path;
                             pInfo.WorkingDirectory = airMechSteamPath;
-                            //  Process p = Process.Start(pInfo);
-
+                            Process p = Process.Start(pInfo);
+                            await System.Threading.Tasks.Task.Delay(500);
+                            IntPtr SteamhWnd = FindWindow(null, "AirMech Strike - Steam");
+                            SetForegroundWindow(SteamhWnd.ToInt32());
+                            await System.Threading.Tasks.Task.Delay(200);
+                            InputManager.Keyboard.KeyPress(System.Windows.Forms.Keys.Tab, 200);
+                            await System.Threading.Tasks.Task.Delay(500);
+                            
+                            InputManager.Keyboard.KeyPress(System.Windows.Forms.Keys.Enter, 500);
+                            InputManager.Keyboard.KeyPress(System.Windows.Forms.Keys.Enter, 500);
                         }
                     }
                     catch
@@ -1375,18 +1460,22 @@ namespace Airmech.Replays.ARM
                     try
                     {
                         pInfo.WorkingDirectory = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + @"\Carbon\AirMech";
-                        //  Process p = Process.Start(pInfo);
+                        Process p = Process.Start(pInfo);
                     }
                     catch { }
                 }
 
-            
+
+            }
         }
+
     }
     public class replayItem
     {
         public string Name { get; set; }
         public string Version { get; set; }
+        public string netPlayers { get; set; }
+        public string maxPlayers { get; set; }
         public string Time { get; set; }
         public string Date { get; set; }
     }
@@ -1587,6 +1676,56 @@ namespace Airmech.Replays.ARM
         public object[] ConvertBack(object value, Type[] targetTypes, object parameter, System.Globalization.CultureInfo culture)
         {
             throw new NotImplementedException();
+        }
+    }
+    public class WindowHandleInfo
+    {
+        private delegate bool EnumWindowProc(IntPtr hwnd, IntPtr lParam);
+
+        [DllImport("user32")]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        private static extern bool EnumChildWindows(IntPtr window, EnumWindowProc callback, IntPtr lParam);
+
+        private IntPtr _MainHandle;
+
+        public WindowHandleInfo(IntPtr handle)
+        {
+            this._MainHandle = handle;
+        }
+
+        public List<IntPtr> GetAllChildHandles()
+        {
+            List<IntPtr> childHandles = new List<IntPtr>();
+
+            GCHandle gcChildhandlesList = GCHandle.Alloc(childHandles);
+            IntPtr pointerChildHandlesList = GCHandle.ToIntPtr(gcChildhandlesList);
+
+            try
+            {
+                EnumWindowProc childProc = new EnumWindowProc(EnumWindow);
+                EnumChildWindows(this._MainHandle, childProc, pointerChildHandlesList);
+            }
+            finally
+            {
+                gcChildhandlesList.Free();
+            }
+
+            return childHandles;
+        }
+
+        private bool EnumWindow(IntPtr hWnd, IntPtr lParam)
+        {
+            GCHandle gcChildhandlesList = GCHandle.FromIntPtr(lParam);
+
+            if (gcChildhandlesList == null || gcChildhandlesList.Target == null)
+            {
+                return false;
+            }
+
+            List<IntPtr> childHandles = gcChildhandlesList.Target as List<IntPtr>;
+            childHandles.Add(hWnd);
+
+            return true;
         }
     }
 }

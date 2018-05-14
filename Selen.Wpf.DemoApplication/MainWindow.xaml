@@ -69,28 +69,27 @@
 
                                 </Grid.RowDefinitions>
 
-                                <TextBlock  Grid.Column="0" x:Name="replayName" Height="36" TextWrapping="Wrap" Text="{Binding Name}" VerticalAlignment="Top" FontSize="18" Foreground="White" FontFamily="Bernino Sans Offc" FontWeight="Bold">
+                                <TextBlock  Grid.Column="0" x:Name="replayName" Height="36" Margin="0,3,0,0" TextWrapping="Wrap" Text="{Binding Name}" VerticalAlignment="Top" FontSize="15" Foreground="White" FontFamily="Bernino Sans Offc" FontWeight="Bold">
                                     <TextBlock.Effect>
                                         <DropShadowEffect  Color="Black" Direction="320" ShadowDepth="5" Opacity="0.5" />
 
                                     </TextBlock.Effect>
                                 </TextBlock>
-                                <TextBlock  Grid.Column="0" x:Name="replayVersion" Height="18" Margin="0,25,0,0" TextWrapping="Wrap" Text="{Binding Version, StringFormat=Build Version: \{0\}}" VerticalAlignment="Top" Foreground="White" FontFamily="Bernino Sans Offc Lt" FontSize="11">
+                                <TextBlock  Grid.Column="0" x:Name="replayVersion" Height="18" Margin="0,21,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" Foreground="LightGray" FontFamily="Bernino Sans Offc Lt" FontSize="11">
+                                    <TextBlock.Text>
+                                        <MultiBinding StringFormat="{}{1}V{2} - Build: {0}">
+                                            <Binding Path="Version" />
+                                            <Binding Path="maxPlayers" />
+                                            <Binding Path="netPlayers" />
+                                        </MultiBinding>
+                                    </TextBlock.Text>
                                     <TextBlock.Effect>
                                         <DropShadowEffect  Color="Black" Direction="320" ShadowDepth="5" Opacity="0.5" />
                                     </TextBlock.Effect>
                                 </TextBlock>
-                                <TextBlock  Grid.Column="1" x:Name="replayTime" Height="18"  Margin="0,4,0,0" TextWrapping="Wrap" Text="{Binding Time}" VerticalAlignment="Top" FontSize="15" Foreground="White" FontFamily="Bernino Sans Offc" HorizontalAlignment="Right">
-                                    <TextBlock.Effect>
-                                        <DropShadowEffect  Color="Black" Direction="320" ShadowDepth="5" Opacity="0.5" />
-
-                                    </TextBlock.Effect>
+                                <TextBlock  Grid.Column="1" x:Name="replayTime" Height="18"  Margin="0,4,0,0" TextWrapping="Wrap" Text="{Binding Time}" VerticalAlignment="Top" FontSize="13" Foreground="LightGray" FontFamily="Bernino Sans Offc Lt" HorizontalAlignment="Right" SnapsToDevicePixels="True" RenderOptions.ClearTypeHint="Enabled">
                                 </TextBlock>
-                                <TextBlock   Grid.Column="1" x:Name="replayDate" Height="36" Margin="0,20,0,0" TextWrapping="Wrap" Text="{Binding Date}" VerticalAlignment="Top" Foreground="White" FontFamily="Bernino Sans Offc" HorizontalAlignment="Right">
-                                    <TextBlock.Effect>
-                                        <DropShadowEffect  Color="Black" Direction="320" ShadowDepth="5" Opacity="0.5" />
-
-                                    </TextBlock.Effect>
+                                <TextBlock   Grid.Column="1" x:Name="replayDate" Height="36" Margin="0,17,0,0" TextWrapping="Wrap" Text="{Binding Date}" VerticalAlignment="Top" Foreground="LightGray" FontSize="12" FontFamily="Bernino Sans Offc Lt" HorizontalAlignment="Right" SnapsToDevicePixels="True" RenderOptions.ClearTypeHint="Enabled">
                                 </TextBlock>
 
                             </Grid>
@@ -196,8 +195,8 @@
                     </Rectangle.RenderTransform>
                 </Rectangle>
                 <Image x:Name="videoPanel" HorizontalAlignment="Left" Height="780" VerticalAlignment="Top" Width="1132" Source="Images/video panel.png"/>
-                <Button x:Name="playButton" Content="Play" HorizontalAlignment="Left" Height="38"  Margin="865,668,0,0" VerticalAlignment="Top" Width="95" BorderBrush="#00201F1D" BorderThickness="0.5" FontSize="22" Foreground="#FFD3A65C" FontFamily="Enter The Grid" Click="playButton_Click"/>
-                <Button x:Name="uploadButton" Content="Share" HorizontalAlignment="Left" Height="38" Margin="750,668,0,0" VerticalAlignment="Top" Width="96" BorderBrush="#00201F1D" BorderThickness="0.5" FontSize="22" Foreground="#FFD4A85D" FontFamily="Enter The Grid" Click="uploadButton_Click"/>
+                <Button x:Name="playButton" Content="Play" HorizontalAlignment="Left" Height="38"  Margin="865,668,0,0" VerticalAlignment="Top" Width="95" BorderBrush="#00201F1D" BorderThickness="0.5" FontSize="22" Foreground="#FFD3A65C" FontFamily="Enter The Grid" Click="playButton_Click" IsEnabled="False"/>
+                <Button x:Name="uploadButton" Content="Share" HorizontalAlignment="Left" Height="38" Margin="750,668,0,0" VerticalAlignment="Top" Width="96" BorderBrush="#00201F1D" BorderThickness="0.5" FontSize="22" Foreground="#FFD4A85D" FontFamily="Enter The Grid" Click="uploadButton_Click" IsEnabled="False"/>
                 <Image x:Name="miniMap" HorizontalAlignment="Left" Height="152" Margin="467,539,0,0" VerticalAlignment="Top" Width="132" Source="Images/thar_mini.jpg" Visibility="Hidden"/>
                 <Image x:Name="miniMapBorder" HorizontalAlignment="Left" Height="186" Margin="442,516,0,0" VerticalAlignment="Top" Width="184" Source="Images/minimap.png" Visibility="Hidden"/>
                 <Grid Margin="117,80,156,199">
@@ -422,7 +421,7 @@
                     </Label.Effect>
                 </Label>
             </Grid>
-            <Image x:Name="btmap" HorizontalAlignment="Left" Height="427" Margin="436,170,0,0" Grid.Row="1" VerticalAlignment="Top" Width="860" Grid.ColumnSpan="2"/>
+            <Image x:Name="screenShot" HorizontalAlignment="Left" Height="490" Margin="192,191,0,0" Grid.Row="1" VerticalAlignment="Top" Width="1070" Grid.ColumnSpan="2"/>
 
         </Grid>
 
