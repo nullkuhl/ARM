@@ -35,6 +35,7 @@ namespace Airmech.Replays.ARM
     public partial class MainWindow
     {
         static int fullScreenHandle = -1;
+        static int mainWindowHandle = -1;
         List<Replay> replayData;
         Storyboard videoPanelSB;
         Storyboard sideBarSB;
@@ -81,10 +82,17 @@ namespace Airmech.Replays.ARM
         static extern IntPtr FindWindow(string lpClassName, string lpWindowName);
 
         [DllImport("user32.dll")]
-        public static extern int GetWindowRect(IntPtr hWnd, out RECT lpRect);
+        public static extern int GetWindowRect(IntPtr hWnd, ref RECT lpRect);
+
+        [DllImport("user32.dll")]
+        public static extern int GetWindowRect(IntPtr hWnd, ref Rectangle lpRect);
+
 
         [DllImport("user32.dll")]
         public static extern int SetForegroundWindow(int hwnd);
+
+        [DllImport("user32.dll")]
+        public static extern long GetWindowRect(int hWnd, ref RECT lpRect);
 
         [DllImport("user32.dll")]
         public static extern long GetWindowRect(int hWnd, ref Rectangle lpRect);
@@ -126,6 +134,8 @@ namespace Airmech.Replays.ARM
             GetClassName(hWnd, sb, size);
             if ((sb.ToString().Contains("AirMech")) && (sb.ToString().Contains("LetterBox")))
                 fullScreenHandle = hWnd;
+            if ((sb.ToString().Contains("AirMech")) && (!sb.ToString().Contains("LetterBox")))
+                mainWindowHandle = hWnd;
             return true;
         }
         public MainWindow()
@@ -1232,14 +1242,18 @@ namespace Airmech.Replays.ARM
 
         private async void playButton_Click(object sender, RoutedEventArgs e)
         {
+            mainWindowHandle = -1;
+            fullScreenHandle = -1;
+            callBackPtr = new CallBackPtr(Report);
+            EnumWindows(callBackPtr, 0);
 
 
-            IntPtr hWnd = FindWindow(null, "AirMech Strike");
-            int ptr = hWnd.ToInt32();
-            if (ptr != 0)
+          //  IntPtr hWnd = FindWindow(null, "AirMech Strike");
+         //   int ptr = hWnd.ToInt32();
+            if (mainWindowHandle > 0)
             {
                 uint pid = 0;
-                GetWindowThreadProcessId(hWnd, out pid);
+                GetWindowThreadProcessId(new IntPtr(mainWindowHandle), out pid);
                 Process proc = Process.GetProcessById((int)pid);
                 string pathToProcess = proc.MainModule.FileName;
                 if(pathToProcess.Contains(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData))) 
@@ -1271,46 +1285,56 @@ namespace Airmech.Replays.ARM
 
                 WindowsInput.InputSimulator inpsim = new WindowsInput.InputSimulator();
                 WINDOWPLACEMENT placement = new WINDOWPLACEMENT();
-                GetWindowPlacement(proc.MainWindowHandle, ref placement);
+                GetWindowPlacement(new IntPtr(mainWindowHandle), ref placement);
                 if (placement.showCmd==2)
                 {
-                    ShowWindow(proc.MainWindowHandle, ShowWindowEnum.ShowMaximized);
-                   
+                    ShowWindow(new IntPtr(mainWindowHandle), ShowWindowEnum.ShowMaximized);
+                    
                 }
-                SetForegroundWindow(hWnd.ToInt32());
+                SetForegroundWindow(new IntPtr(mainWindowHandle));
                 
                 //check if app is already in fullscreen mode
                 Rectangle fullScreenRect = new Rectangle();
-                callBackPtr = new CallBackPtr(Report);
-                EnumWindows(callBackPtr, 0);
-
+                
+       
                 GetWindowRect(fullScreenHandle, ref fullScreenRect);
 
                 if (!(fullScreenRect.Width > 0))
                 {
+                    ShowWindow(new IntPtr(fullScreenHandle), ShowWindowEnum.ShowMaximized);
+                    ShowWindow(new IntPtr(mainWindowHandle), ShowWindowEnum.ShowMaximized);
+                    SetForegroundWindow(new IntPtr(mainWindowHandle));
                     inpsim.Keyboard.ModifiedKeyStroke(WindowsInput.Native.VirtualKeyCode.MENU, WindowsInput.Native.VirtualKeyCode.RETURN);
                     await System.Threading.Tasks.Task.Delay(1000);
                     System.Threading.Thread.Sleep(1000);
                 }
                 //app now must be in full screen 
-                Rectangle rect = new Rectangle();
-                GetWindowRect(ptr, ref rect);
+                RECT rect = new RECT();
+                Rectangle rectIntersect = new Rectangle();
+                
 
-                int twoPercentHeight = (int)(rect.Height * 0.04) ;
-                int onePercentWidth = (int)(rect.Width * 0.005);
+                GetWindowRect(mainWindowHandle, ref rect);
+                int height = rect.bottom - rect.top;
+                int width = rect.right - rect.left;
+                rectIntersect.X = rect.left;
+                rectIntersect.Y = rect.top;
+                rectIntersect.Height = height;
+                rectIntersect.Width = width;
+                int twoPercentHeight = (int)(height * 0.04) ;
+                int onePercentWidth = (int)(width * 0.005);
 
                 //Find out which monitor
-                int ScreenOfAppWidth = rect.Width;
+                int ScreenOfAppWidth = width;
                 int diffInHeight = 0;
                 foreach (System.Windows.Forms.Screen screen in System.Windows.Forms.Screen.AllScreens)
                 {
-                    if (screen.Bounds.IntersectsWith(rect))
+                    if (screen.Bounds.IntersectsWith(rectIntersect))
                     {
                         ScreenOfAppWidth = screen.Bounds.Width;
                         diffInHeight = screen.Bounds.Height - screen.WorkingArea.Height;
                     }
                 }
-                int diffInWidth = ScreenOfAppWidth - rect.Width;
+                int diffInWidth = ScreenOfAppWidth - width;
 
                 //detection of black edges
                 BitmapSource btsrc;
@@ -1341,10 +1365,10 @@ namespace Airmech.Replays.ARM
                 }
 
                 int blackMarginWidth = onePercentWidth;
-                for (int i = 0; i < rect.Width; i++)
+                for (int i = 0; i < width; i++)
                 {
                     try { 
-                        System.Drawing.Color curPixel = bitmap.GetPixel( rect.Width - i,  rect.Height - rect.Height / 3);
+                        System.Drawing.Color curPixel = bitmap.GetPixel( width - i,  height - height / 3);
                         //  Console.Write("(" + curPixel.R + "," + curPixel.G + "," + curPixel.B + ") ");
                         
                         if ((curPixel.R + curPixel.G + +curPixel.B) == 0)
@@ -1360,11 +1384,11 @@ namespace Airmech.Replays.ARM
                     }
                 }
                 int blackMarginHeight = 0;
-                for (int i = 0; i < rect.Height; i++)
+                for (int i = 0; i < height; i++)
                 {
                     try
                     {
-                        System.Drawing.Color curPixel = bitmap.GetPixel(rect.X + rect.Width / 2, rect.Y + rect.Height - i);
+                        System.Drawing.Color curPixel = bitmap.GetPixel(rect.left + width / 2, rect.top + height - i);
                         // Console.Write("(" + curPixel.R + "," + curPixel.G + "," + curPixel.B + ") ");
                         if ((curPixel.R + curPixel.G + +curPixel.B) == 0)
                         {
@@ -1379,11 +1403,11 @@ namespace Airmech.Replays.ARM
 
                 }
                 Console.WriteLine("\n\n");
-                int mouseMoveX = rect.X + rect.Width - onePercentWidth - blackMarginWidth + diffInWidth;
-                int mouseMoveY = rect.Y + rect.Height - twoPercentHeight - blackMarginHeight + diffInHeight;
+                int mouseMoveX = rect.left + width - onePercentWidth - blackMarginWidth + diffInWidth;
+                int mouseMoveY = rect.top + height - twoPercentHeight - blackMarginHeight + diffInHeight;
                 if ((fullScreenRect.Width > 0))
                 {
-                    mouseMoveY -= rect.Y;
+                   // mouseMoveY -= rect.top;
                 }
 
                 System.Threading.Thread.Sleep(500);
